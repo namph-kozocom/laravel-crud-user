@@ -15,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [UserController::class, 'showListUserPage'])->name('index');
-Route::get('/new', [UserController::class, 'showAddUserPage'])->name('form-add');
+Route::get('/create', [UserController::class, 'showAddUserPage'])->name('form-add');
+Route::post('/store', [UserController::class, 'addNewUser'])->name(name: 'store');

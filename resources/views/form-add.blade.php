@@ -13,15 +13,16 @@
         <div class="mt-8">
             <h3 class="text-gray-700 text-3xl font-medium">Add New User</h3>
             <div class="mt-6 bg-white shadow-md rounded-lg p-6">
-                <form action="/save-user" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">First Name</label>
-                            <input type="text" name="firstName" required class="mt-1 p-2 w-full border rounded-md">
+                            <input type="text" name="first_name" required class="mt-1 p-2 w-full border rounded-md">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Last Name</label>
-                            <input type="text" name="lastName" required class="mt-1 p-2 w-full border rounded-md">
+                            <input type="text" name="last_name" required class="mt-1 p-2 w-full border rounded-md">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Email</label>
@@ -53,6 +54,15 @@
                         <a href="/" class="bg-gray-500 px-4 py-2 rounded text-white mr-2">Cancel</a>
                         <button type="submit" class="bg-indigo-500 px-4 py-2 rounded text-white">Add User</button>
                     </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </form>
             </div>
         </div>
