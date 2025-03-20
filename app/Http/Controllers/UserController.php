@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use App\Services\FileUploadService;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -13,9 +15,9 @@ class UserController extends Controller
     public function showListUserPage()
     {
         $users = User::orderByDesc('id')->get();
-        return view('index', compact( 'users'));
+        return view('index', compact('users'));
     }
-    
+
     public function showAddUserPage()
     {
         return view('form-add');
@@ -25,21 +27,15 @@ class UserController extends Controller
     {
         try {
             $validatedData = $request->validated();
-
-            if ($request->hasFile(key: 'avatar')) {
-                $avatarPath = $request->file(key: 'avatar')->store('avatars', 'public');
-                $validatedData['avatar'] = $avatarPath ?? null;
-            }
+            $validatedData['avatar'] = FileUploadService::upload($request->file('avatar'));
 
             $user = User::create($validatedData);
 
-            if ($user) {
-                return redirect()->route('index')->with('success', 'User created successfully!');
-            }
-
-            return redirect()->route('form-add')->with('error', 'Something went wrong!');
+            return $user
+                ? redirect()->route('index')->with('success', 'User created successfully!')
+                : redirect()->route('form-add')->with('error', 'Something went wrong!');
         } catch (\Exception $e) {
-            throw $e;
+            return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }
