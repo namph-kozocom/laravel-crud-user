@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         try {
             $validatedData = $request->validated();
-            $validatedData['avatar'] = FileUploadService::upload($request->file('avatar'));
+            $validatedData['avatar'] = FileUploadService::upload($request->file('avatar'), 'avatars');
 
             $user = User::create($validatedData);
 
@@ -54,7 +54,7 @@ class UserController extends Controller
                 if ($user->avatar) {
                     FileUploadService::delete($user->avatar);
                 }
-                $validatedData['avatar'] = FileUploadService::upload($request->file('avatar'));
+                $validatedData['avatar'] = FileUploadService::upload($request->file('avatar'), 'avatars');
             }
 
             $user->update($validatedData);
@@ -71,9 +71,6 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user) {
-            if ($user->avatar) {
-                FileUploadService::delete($user->avatar);
-            }
             $user->delete();
             return redirect()->route('index')->with('success', 'User deleted successfully!');
         }
