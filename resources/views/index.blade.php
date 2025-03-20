@@ -78,10 +78,10 @@
 
                                             <td
                                                 class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 font-medium">
-                                                <a href="/edit-user/"
+                                                <a href="{{ route('form-edit', ['id' => $user->id]) }}"
                                                     class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                                 <span> | </span>
-                                                <a href="/delete/
+                                                <a href="{{ route('user.delete', ['id' => $user->id]) }}"
                                                     onclick="return confirm('Are you sure to delete this user?')"
                                                     class="text-red-600 hover:text-red-700">Delete</a>
                                             </td>

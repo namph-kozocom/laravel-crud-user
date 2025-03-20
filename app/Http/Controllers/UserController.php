@@ -23,6 +23,12 @@ class UserController extends Controller
         return view('form-add');
     }
 
+    public function showEditUserPage($id)
+    {
+        $user = User::find($id);
+        return view('form-edit', compact('user'));
+    }
+
     public function addNewUser(UserRequest $request)
     {
         try {
@@ -37,5 +43,41 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
+    }
+
+    public function editUser(UserRequest $request, $id)
+    {
+        try {
+            $validatedData = $request->validated();
+            $user = User::find($id);
+            if ($request->hasFile('avatar')) {
+                if ($user->avatar) {
+                    FileUploadService::delete($user->avatar);
+                }
+                $validatedData['avatar'] = FileUploadService::upload($request->file('avatar'));
+            }
+
+            $user->update($validatedData);
+
+            return $user
+                ? redirect()->route('index')->with('success', 'User updated successfully!')
+                : back()->with('error', 'Something went wrong!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+        if ($user) {
+            if ($user->avatar) {
+                FileUploadService::delete($user->avatar);
+            }
+            $user->delete();
+            return redirect()->route('index')->with('success', 'User deleted successfully!');
+        }
+
+        return back()->with('error', 'User not found!');
     }
 }
